@@ -22,7 +22,7 @@ function estaAutenticado(req, res, next) {
   if (req.session.usuario) {
     next();
   } else {
-    resposta.write(`
+    res.write(`
         <h2>Você precisa fazer login primeiro</h2>
         <a href="/login">Ir para login</a>
         `);
@@ -30,7 +30,7 @@ function estaAutenticado(req, res, next) {
 }
 
 app.get("/login", (req, res) => {
-  resposta.write(`
+  res.write(`
     <html>
     <head>
     <title>Login</title>
@@ -63,6 +63,56 @@ app.get("/login", (req, res) => {
     </html>
     `);
 });
+app.get("/", (req, res) => {
+  res.write(`
+  <!DOCTYPE html>
+  <html>
+  <head>
+    <title>Sistema</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  </head>
+
+  <body>
+
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+
+      <a class="navbar-brand" href="/">Sistema</a>
+
+      <ul class="navbar-nav">
+
+        <li class="nav-item">
+          <a class="nav-link" href="/">Inicio</a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link" href="/login">Login</a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link" href="/produto">Cadastrar Produto</a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link" href="/produtos">Produtos</a>
+        </li>
+
+      </ul>
+
+    </div>
+  </nav>
+
+  <div class="container mt-4">
+    <h1>Bem-vindo ao sistema</h1>
+    <p>Escolha uma opcao no menu.</p>
+  </div>
+
+  </body>
+  </html>
+  `);
+});
 
 app.post("/login", (req, res) => {
   const usuario = req.body.usuario;
@@ -77,7 +127,7 @@ app.post("/login", (req, res) => {
 app.get("/produto", estaAutenticado, (req, res) => {
   const ultimo = req.cookies.ultimoAcesso || "Primeiro acesso";
 
-  resposta.write(`
+  res.write(`
     <html>
 
     <head>
@@ -153,7 +203,7 @@ app.post("/produto", estaAutenticado, (req, res) => {
 
   produtos.push(produto);
 
-  resposta.write("/produtos");
+  res.write("/produtos");
 });
 
 app.get("/produtos", estaAutenticado, (req, res) => {
@@ -215,9 +265,9 @@ app.get("/produtos", estaAutenticado, (req, res) => {
     </html>
     `;
 
-  resposta.write(tabela);
+  res.write(tabela);
 });
 
-server.listen(PORT, () => {
+app.listen(PORT, () => {
   console.log(`Servidor rodando em http://localhost:${PORT}`);
 });
